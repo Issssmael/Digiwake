@@ -1,0 +1,38 @@
+void interrupt_to_compteur() {
+    //Quand le réveil se met en marche on interromp tout le programme.
+    if (reveil == 0) {
+        return;
+        //Le réveil est desactivé.
+    }
+    clock_t pauseStart = 0;
+    // Départ du timer
+    clock_t start = clock();
+    int i = 0;
+    int compteur = 0;  //compte le nombre de ligne du fichier texte.
+    char buffer[100];  //chaîne de caractères contenant une ligne du fichier texte.
+    while (elapsedTime < 10) {
+        //timer.
+        clock_t end = clock();
+        double elapsed = (double) (end - start) / CLOCKS_PER_SEC;
+        if (elapsed >= 1.0) {
+            //ce qui compte.
+            elapsedTime += (float) elapsed;
+            start = clock(); // Réinitialisation du début pour le prochain tick
+        }
+    }
+    FILE *fichierTemps = fopen("temps.txt","a+");  //Le mode d'écriture "a" conserve les anciennes données en mettant les nouvelles à la fin du fichier texte.
+    if(fichierTemps == NULL){
+        printf("Impossible d'ouvrir le fichier.");
+    }
+    while (fgets(buffer, sizeof(buffer), fichierTemps) != NULL) {
+        //on incrémente le compteur pour chaque ligne prééxistante du fichier texte.
+        compteur++;
+    }
+
+    // Incrémenter le compteur pour le jour actuel
+    compteur++;
+
+    // Écrire dans le fichier avec le format requis
+    fprintf(fichierTemps, "Jour numéro %d : %.1f secondes.\n", compteur, elapsedTime);
+    fclose(fichierTemps);
+}
