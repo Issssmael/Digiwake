@@ -74,8 +74,10 @@ const int button3 = 5;
 const int button4 = 6;
 const int button5 = 7;
 const int analogInPotentio = A0;
+int sensorValue = 0;
 int potentio = 0;
 int cursorMenu = 1;
+int cursorReglerRev = 1;
 int reveil = 1;
 ////////COMPTEUR///////////
 float currentTime = 0;  ///
@@ -93,4 +95,8 @@ char option3[75] = {"3 : Consulter l'historique des temps de mise hors-tension d
 char option3bis[100] = {"3 : >> Consulter l'historique des temps de mise hors-tension du réveil <<"};//
 char option4[50] = {"4 : Sortir"};                                                                   //
 char option4bis[75] = {"4 : >> Sortir <<"};                                                          //
+char reglerReveilMin[50] = {"Régler les minutes"};                                                   //
+char reglerReveilMinbis[50] = {">> Régler les minutes <<"};                                          //
+char reglerReveilH[50] = {"Régler les heures"};                                                      //
+char reglerReveilHbis[50] = {">> Régler les heures <<"};                                             //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
