@@ -1,0 +1,3 @@
+void desactiver_reveil(){
+  reveil = 0;
+}
