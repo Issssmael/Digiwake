@@ -1,0 +1,17 @@
+void setup(){
+    pinMode(button2, INPUT);  //Séléction 1
+    pinMode(button3, INPUT);  //Séléction 2
+    pinMode(button4, INPUT);  //Séléction 3 (Activation/désactivation du réveil)
+    pinMode(button5, INPUT);  //Séléction 4 (validation pour le menu);
+    pinMode(analogInPotentio, INPUT);  //pour régler l'heure du réveil
+    pinMode(capteurultrasons, INPUT);  //capter les bruits du réveil
+    pinMode(LED, OUTPUT);  //LED qui s'allume quand le réveil sonne (vérifier le bon fonctionnement du programme)
+    attachInterrupt(digitalPinToInterrupt(LED), interrupt_to_compteur, RISING);  //pensez à remplacer la condition d'interruption par un signal sonore et non un front montant de la LED.
+    attachInterrupt(digitalPinToInterrupt(button5), desactiver_reveil, RISING);
+    Serial.begin(9600);  //Pour les tests
+}
+
+
+void loop(){
+  valmenu = menu();
+}
