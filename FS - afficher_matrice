@@ -63,10 +63,6 @@ void loop() {
   // Affichage de la dizaine d'heure sur le premier bloc
   displayDigit(3, hourTens);
 
-  // Affichage des points entre les heures et les minutes sur le deuxième bloc
-  lc.setLed(2, 1, 7, true);
-  lc.setLed(2, 6, 7, true);
-
   // Affichage de l'unité d'heure sur le deuxième bloc
   displayDigit(2, hourOnes);
 
@@ -76,6 +72,15 @@ void loop() {
   // Affichage de l'unité de minutes sur le quatrième bloc
   displayDigit(0, minutOnes);
 
+
+  // Affichage des points entre les heures et les minutes sur le deuxième bloc
+  lc.setLed(2, 1, 7, true);
+  lc.setLed(2, 6, 7, true);
+  
+  delay(1000);
+
+  lc.setLed(2, 1, 7, false);
+  lc.setLed(2, 6, 7, false);
+
   delay(1000);
 }
-
