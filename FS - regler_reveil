@@ -1,81 +1,33 @@
 void regler_heure_reveil(){
   while(cursorMenu == 2){
-    switch(cursorReglerRev){
-      case 1:
-      oled1.clearDisplay();
-      oled1.println(reglerReveilMinbis);
-      oled1.println(reglerReveilH);
-      oled1.display();
-      if(digitalRead(button3) == HIGH){
-        //bouton de validation.
-        oled1.clearDisplay();
-        oled1.println("Actuellement en train de changer les minutes.");
-        oled1.println("Appuyer sur un des deux boutons de navigation pour quitter.");
-        oled1.display();
-        if(digitalRead(button2) == HIGH || digitalRead(button4) == HIGH){
-          break;
+    static long oldPosition = -999;
+    long newPosition = myEncoder.read();
+  
+    if (newPosition != oldPosition) {
+      if (newPosition > oldPosition) {
+        if (minutes < 59) {
+          minutes++;
+        } else {
+          minutes = 0;
+          if (heures < 23) {
+            heures++;
+          } else {
+            heures = 0;
+          }
         }
-        sensorValue = analogRead(analogInPotentio);
-        potentio = map(sensorValue,0,1023,0,60);
-        //donner ici aux minutes la valeur de l'angle du potentiomètre.
-        break;
-      }
-      else if(digitalRead(button2) == HIGH){
-        cursorReglerRev ++;
-        if(cursorReglerRev == 3){
-          cursorReglerRev = 1;
+      } else {
+        if (minutes > 0) {
+          minutes--;
+        } else {
+          minutes = 59;
+          if (heures > 0) {
+            heures--;
+          } else {
+            heures = 23;
+          }
         }
-        delay(50);
-        break;
       }
-      else if(digitalRead(button4) == HIGH){
-        cursorReglerRev--;
-        if(cursorReglerRev == 0){
-          cursorReglerRev = 2;
-        }
-        delay(50);
-        break;
-      }
-      break;
-      case 2:
-      oled1.clearDisplay();
-      oled1.println(reglerReveilMin);
-      oled1.println(reglerReveilHbis);
-      oled1.display();
-      if(digitalRead(button3) == HIGH){
-        //bouton de validation.
-        oled1.clearDisplay();
-        oled1.println("Actuellement en train de changer les heures");
-        oled1.println("Appuyer sur un des deux boutons de navigation pour quitter.");
-        oled1.display();
-        if(digitalRead(button2) == HIGH || digitalRead(button4) == HIGH){
-          break;
-        }
-        sensorValue = analogRead(analogInPotentio);
-        potentio = map(sensorValue,0,1023,0,24);
-        //donner ici aux heures la valeur de l'angle du potentiomètre.
-        break;
-      }
-      else if(digitalRead(button2) == HIGH){
-        cursorReglerRev ++;
-        if(cursorReglerRev == 3){
-          cursorReglerRev = 1;
-        }
-        delay(50);
-        break;
-      }
-      else if(digitalRead(button4) == HIGH){
-        cursorReglerRev--;
-        if(cursorReglerRev == 0){
-          cursorReglerRev = 2;
-        }
-        delay(50);
-        break;
-      }
-      break;
+      oldPosition = newPosition;
     }
-    sensorValue = analogRead(analogInPotentio);
-    potentio = map(sensorValue,0,1023,0,60);
-
-  }
+    }
 }
