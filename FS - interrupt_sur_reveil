@@ -1,38 +1,49 @@
-void interrupt_to_compteur() {
-    //Quand le réveil se met en marche on interromp tout le programme.
-    if (reveil == 0) {
-        return;
-        //Le réveil est desactivé.
-    }
-    clock_t pauseStart = 0;
-    // Départ du timer
-    clock_t start = clock();
-    int i = 0;
-    int compteur = 0;  //compte le nombre de ligne du fichier texte.
-    char buffer[100];  //chaîne de caractères contenant une ligne du fichier texte.
-    while (elapsedTime < 10) {
-        //timer.
-        clock_t end = clock();
-        double elapsed = (double) (end - start) / CLOCKS_PER_SEC;
-        if (elapsed >= 1.0) {
-            //ce qui compte.
-            elapsedTime += (float) elapsed;
-            start = clock(); // Réinitialisation du début pour le prochain tick
-        }
-    }
-    FILE *fichierTemps = fopen("temps.txt","a+");  //Le mode d'écriture "a" conserve les anciennes données en mettant les nouvelles à la fin du fichier texte.
-    if(fichierTemps == NULL){
-        printf("Impossible d'ouvrir le fichier.");
-    }
-    while (fgets(buffer, sizeof(buffer), fichierTemps) != NULL) {
-        //on incrémente le compteur pour chaque ligne prééxistante du fichier texte.
-        compteur++;
-    }
+void interrupt_to_compteur(){
+  if(reveil == 0){
+    return;
+  }
+  int compteur3 = 0;  //compte le nombre de ligne du fichier texte.
+  char buffer[100];  //chaîne de caractères contenant une ligne du fichier texte.
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //ICI METTRE UNE CONDITION POUR QUE LE TIMER DEMARRE
+  //EXEMPLE : LE CAPTEUR A ULTRASONS DETECTE UN SON.
 
-    // Incrémenter le compteur pour le jour actuel
-    compteur++;
+  cli(); // Désactive les interruptions globalement
+   // Configuration du Timer1 pour une interruption toutes les secondes
+  TCCR1A = 0; // Configuration des registres de contrôle du Timer1
+  TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10); // Mode CTC, prédivision de l'horloge par 1024
+  OCR1A = 15624; // Valeur de comparaison pour obtenir une interruption toutes les secondes
+  TIMSK1 |= (1 << OCIE1A); // Autorise l'interruption de comparaison du Timer1
 
-    // Écrire dans le fichier avec le format requis
-    fprintf(fichierTemps, "Jour numéro %d : %.1f secondes.\n", compteur, elapsedTime);
-    fclose(fichierTemps);
+  attachInterrupt(digitalPinToInterrupt(button1), stopTimer, FALLING);
+  sei(); // Active les interruptions globalement
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  FILE *fichierTemps = fopen("temps.txt","a+");  //Le mode d'écriture "a" conserve les anciennes données en mettant les nouvelles à la fin du fichier texte.
+  if(fichierTemps == NULL){
+      printf("Impossible d'ouvrir le fichier.");
+  }
+  while (fgets(buffer, sizeof(buffer), fichierTemps) != NULL) {
+      //on incrémente le compteur pour chaque ligne prééxistante du fichier texte.
+      compteur3++;
+  }
+  // Incrémenter le compteur pour le jour actuel
+  compteur3++;
+  // Écrire dans le fichier avec le format requis
+  fprintf(fichierTemps, "Jour numéro %d : %lu secondes.\n", compteur3, compteur);
+  fclose(fichierTemps);  
+}
+
+
+void stopTimer() {
+  TIMSK1 &= ~(1 << OCIE1A); // Désactive l'interruption de comparaison du Timer1
+}
+
+
+
+// Fonction d'interruption pour le Timer1 (appelée toutes les secondes)
+ISR(TIMER1_COMPA_vect) {
+  compteur++; // Incrémente le compteur à chaque interruption du Timer1
+  // Vous pouvez effectuer d'autres actions à chaque seconde
 }
