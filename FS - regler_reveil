@@ -1,4 +1,6 @@
-void regler_heure_reveil(){
+void regler_heure_reveil(int minutes, int heures){
+  //on utilisera cette fonction pour régler l'heure de l'alarme ainsi que l'heure du réveil
+  //c'est pour cette raison que j'ai rajouté des paramètres, afin que cela se fasse plus facilement.
   while(cursorMenu == 2){
     static long oldPosition = -999;
     long newPosition = myEncoder.read();
