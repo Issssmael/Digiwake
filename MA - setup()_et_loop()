@@ -1,17 +1,64 @@
-void setup(){
-    pinMode(button2, INPUT);  //Séléction 1
-    pinMode(button3, INPUT);  //Séléction 2
-    pinMode(button4, INPUT);  //Séléction 3 (Activation/désactivation du réveil)
-    pinMode(button5, INPUT);  //Séléction 4 (validation pour le menu);
-    pinMode(analogInPotentio, INPUT);  //pour régler l'heure du réveil
-    pinMode(capteurultrasons, INPUT);  //capter les bruits du réveil
-    pinMode(LED, OUTPUT);  //LED qui s'allume quand le réveil sonne (vérifier le bon fonctionnement du programme)
-    attachInterrupt(digitalPinToInterrupt(LED), interrupt_to_compteur, RISING);  //pensez à remplacer la condition d'interruption par un signal sonore et non un front montant de la LED.
-    attachInterrupt(digitalPinToInterrupt(button5), desactiver_reveil, RISING);
-    Serial.begin(9600);  //Pour les tests
+void setup() {
+  pinMode(button1, INPUT);
+  pinMode(button2, INPUT);
+  pinMode(button3, INPUT);
+  pinMode(button4, INPUT);
+  pinMode(button5, INPUT);
+  pinMode(LED, OUTPUT);  //LED qui s'allume quand le réveil sonne (vérifier le bon fonctionnement du programme)
+  Serial.begin(9600); 
+  Serial.begin(115200);
+  if (!rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+
+  if (!rtc.isrunning()) {
+    Serial.println("RTC is NOT running!");
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  }
+
+  for (int i = 0; i < 4; i++) {
+    lc.shutdown(i, false);
+    lc.setIntensity(i, 5);
+    lc.clearDisplay(i);
+  } 
+  attachInterrupt(digitalPinToInterrupt(button5),desactiver_reveil,RISING);
+  // put your setup code here, to run once:
 }
 
 
-void loop(){
-  valmenu = menu();
+
+void loop() {
+  DateTime now = rtc.now();
+
+  int hourTens = now.hour() / 10;
+  int hourOnes = now.hour() % 10;
+  int minutTens = now.minute() / 10;
+  int minutOnes = now.minute() % 10;
+
+  // Affichage de la dizaine d'heure sur le premier bloc
+  displayDigit(3, hourTens);
+
+  // Affichage de l'unité d'heure sur le deuxième bloc
+  displayDigit(2, hourOnes);
+
+  // Affichage de la dizaine de minutes sur le troisième bloc
+  displayDigit(1, minutTens);
+
+  // Affichage de l'unité de minutes sur le quatrième bloc
+  displayDigit(0, minutOnes);
+
+
+  // Affichage des points entre les heures et les minutes sur le deuxième bloc
+  lc.setLed(2, 1, 7, true);
+  lc.setLed(2, 6, 7, true);
+  
+  delay(1000);
+
+  lc.setLed(2, 1, 7, false);
+  lc.setLed(2, 6, 7, false);
+
+  delay(1000);
+
+  // put your main code here, to run repeatedly:
 }
