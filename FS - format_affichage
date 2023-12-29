@@ -1,0 +1,49 @@
+void format_affichage(){
+  int cursor = 1;
+  switch(cursor){
+    case 1:
+    oled1.clearDisplay();
+    oled1.println("Quel format voulez-vous voir : ");
+    oled1.println("1 - >> 12h am/pm << ");
+    oled1.println("2 - 24h ");
+    oled1.display();
+    if(digitalRead(button3) == HIGH){
+      affichage = 1;
+      delay(50);
+    }
+    if(digitalRead(button2) == HIGH){
+      cursor--;
+      if(cursor == 0){
+        cursor = 2;
+      }
+    }
+    if(digitalRead(button4) == HIGH){
+      cursor++;
+      if(cursor == 3){
+        cursor = 1;
+      }
+    }
+    case 2:
+    oled1.clearDisplay();
+    oled1.println("Quel format voulez-vous voir : ");
+    oled1.println("1 - 12h am/pm");
+    oled1.println("2 - >> 24h << ");
+    oled1.display();
+    if(digitalRead(button3) == HIGH){
+      affichage = 2;
+      delay(50);
+    }
+    if(digitalRead(button2) == HIGH){
+      cursor--;
+      if(cursor == 0){
+        cursor = 2;
+      }
+    }
+    if(digitalRead(button4) == HIGH){
+      cursor++;
+      if(cursor == 3){
+        cursor = 1;
+      }
+    }
+  }
+}
