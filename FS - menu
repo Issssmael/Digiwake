@@ -61,6 +61,9 @@ const GFXfont Tahu_16pt7b PROGMEM = {
 
 Adafruit_SSD1306 oled1(SCREEN_WIDTH,SCREEN_HEIGHT,&Wire, -1);
 int cursorMenu = 1;
+const int button2 = 4;
+const int button3 = 5;
+const int button4 = 6;
 //Ce qui suit est purement pour l'ésthétisme (expliqué plus tard dans le programme)////////////////////
 char messageDep[50] = {"Bonjour, que voulez-vous faire ? "};                                         //
 char option1[50] = {"1 : Régler l'heure de l'alarme"};                                               //
