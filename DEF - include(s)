@@ -4,7 +4,18 @@
 #include <Adafruit_SSD1306.h>
 #include <string.h>
 #include <SPI.h>
-#include <RTClib.h>
 #include <stdio.h>
 #include <time.h>
 #include <ctype.h>
+#include <Encoder.h>
+#include <RTClib.h>
+#include <LedControl.h>
+
+
+#define SCREEN_WIDTH 128 //Largeur
+#define SCREEN_HEIGHT 64 //Hauteur
+
+// Broches de l'encodeur rotatif
+#define encoderPinA 2
+#define encoderPinB 3
+#define buttonPin 4
