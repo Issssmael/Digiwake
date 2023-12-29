@@ -1,35 +1,15 @@
 void consulter_temps(){
-  //Pour des soucis de lisibilité, on ne se souciera que des 5 derniers temps.
-  FILE *fichierTemps = fopen("temps.txt","a+");  //Le mode d'écriture "a" conserve les anciennes données en mettant les nouvelles à la fin du fichier texte.
+    char buffer2[100];
+    FILE *fichierTemps = fopen("temps.txt","r");
     if(fichierTemps == NULL){
         printf("Impossible d'ouvrir le fichier.");
     }
     while (fgets(buffer2, sizeof(buffer2), fichierTemps) != NULL) {
-        //on incrémente le compteur pour chaque ligne prééxistante du fichier texte.
-        compteur2++;
-    }
-    char tab5[50] = "Jour numéro : %d",compteur2;
-    compteur2--;
-    char tab4[50] = "Jour numéro : %d",compteur2;
-    compteur2--;
-    char tab3[50] = "Jour numéro : %d",compteur2;
-    compteur2--;
-    char tab2[50] = "Jour numéro : %d",compteur2;
-    compteur2--;
-    char tab1[50] = "Jour numéro : %d",compteur2;
-    for(int i = 0; i < compteur2; i++){
-        fgets(buffer2, sizeof(buffer2),fichierTemps);      
-        for(int y = 0; y < sizeof(tab1); y++){
-          indicateur = 0;
-          if(tab1[y] != buffer2[y] || tab2[y] != buffer2[y] || tab3[y] != buffer2[y] || tab4[y] != buffer2[y] || tab5[y] != buffer2[y]){
-            indicateur = 1;
-          }
+        //on incrémente le compteur pour chaque ligne prééxistante du fichier texte
+        for(unsigned long i = 0; i < strlen(buffer2); i++){
+          oled1.print(buffer2[i]);
         }
-      if(indicateur == 1){
-        continue;
-      }
-      else {
-
-      }
+        oled1.println();
     }
+    fclose(fichierTemps);
 }
