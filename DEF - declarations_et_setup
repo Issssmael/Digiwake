@@ -1,6 +1,3 @@
-#define SCREEN_WIDTH 128 //Largeur
-#define SCREEN_HEIGHT 64 //Hauteur
-
 //POLICE DECRITURE POUR L'ECRAN OLED
 
 const uint8_t Tahu_16pt7bBitmaps[] PROGMEM = {
@@ -56,6 +53,20 @@ const GFXfont Tahu_16pt7b PROGMEM = {
   (GFXglyph *)Tahu_16pt7bGlyphs,
   0x20, 0x7E, 46 };
 
+// Tableau pour les chiffres de 0 à 9
+byte digits[10][8] = {
+  { B00111100, B01000010, B01000010, B01000010, B01000010, B01000010, B01000010, B00111100 },  // 0
+  { B00011000, B00001000, B00001000, B00001000, B00001000, B00001000, B00001000, B00011100 },  // 1
+  { B00111100, B01000010, B00000010, B00011100, B00100000, B01000000, B01000010, B00111100 },  // 2
+  { B00111100, B01000010, B00000010, B00011100, B00000010, B00000010, B01000010, B00111100 },  // 3
+  { B00001000, B00011000, B00101000, B01001000, B01001000, B01111110, B00001000, B00001000 },  // 4
+  { B00111100, B01000000, B01000000, B00111100, B00000010, B00000010, B01000010, B00111100 },  // 5
+  { B00111100, B01000000, B01000000, B00111100, B01000010, B01000010, B01000010, B00111100 },  // 6
+  { B00111110, B00000010, B00000100, B00001000, B00010000, B00010000, B00010000, B00010000 },  // 7
+  { B00111100, B01000010, B01000010, B00111100, B01000010, B01000010, B01000010, B00111100 },  // 8
+  { B00111100, B01000010, B01000010, B00111110, B00000010, B00000010, B01000010, B00111100 }   // 9
+};
+
 
 //compter le temps : 
 // -- > Fonction d'interruption
@@ -64,26 +75,34 @@ const GFXfont Tahu_16pt7b PROGMEM = {
 // -- > LED
 // -- > Afficher l'heure du réveil - Matrice de LEDs
 
+const int DIN_PIN = 12;
+const int CLK_PIN = 11;
+const int CS_PIN = 10;
+
 Adafruit_SSD1306 oled1(SCREEN_WIDTH,SCREEN_HEIGHT,&Wire, -1);
+Adafruit_SSD1306 oled2(SCREEN_WIDTH,SCREEN_HEIGHT,&Wire, -2);
+Encoder myEncoder(encoderPinA, encoderPinB);
+RTC_DS1307 rtc;
+LedControl lc = LedControl(DIN_PIN, CLK_PIN, CS_PIN, 4);  // 4 blocs de 8x8 LED
+
 
 const int LED = 2;
 int valmenu = 0;
 const int capteurultrasons = A1;
+const int button1 = 3;
 const int button2 = 4;
 const int button3 = 5;
 const int button4 = 6;
 const int button5 = 7;
-const int analogInPotentio = A0;
-int sensorValue = 0;
-int potentio = 0;
 int cursorMenu = 1;
 int cursorReglerRev = 1;
 int reveil = 1;
-////////COMPTEUR///////////
-float currentTime = 0;  ///
-float elapsedTime = 0;  ///
-float previousTime = 0; ///
-///////////////////////////
+int compteur2 = 0;
+char buffer2[100];
+int indicateur = 0;
+int adresse_debut = 0; //Adresse pour fichier texte via mémoire EEPROM
+int affichage = 1; //Si affichage vaut 1, c'est am/pm, si il vaut 2, c'est le format 24h.
+volatile uint32_t compteur = 0; // Compteur en secondes
 
 //Ce qui suit est purement pour l'ésthétisme (expliqué plus tard dans le programme)////////////////////
 char messageDep[50] = {"Bonjour, que voulez-vous faire ? "};                                         //
@@ -95,8 +114,17 @@ char option3[75] = {"3 : Consulter l'historique des temps de mise hors-tension d
 char option3bis[100] = {"3 : >> Consulter l'historique des temps de mise hors-tension du réveil <<"};//
 char option4[50] = {"4 : Sortir"};                                                                   //
 char option4bis[75] = {"4 : >> Sortir <<"};                                                          //
-char reglerReveilMin[50] = {"Régler les minutes"};                                                   //
-char reglerReveilMinbis[50] = {">> Régler les minutes <<"};                                          //
-char reglerReveilH[50] = {"Régler les heures"};                                                      //
-char reglerReveilHbis[50] = {">> Régler les heures <<"};                                             //
+char option5[50] = {"5 : Effacer les temps de mise hors-tension"};                                   //
+char option5bis[75] = {"5 : >> Effacer les temps de mise hors-tension <<"};                          //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// put function declarations here:
+void menu();
+void consulter_temps();
+void regler_heure_reveil();
+void sortir();
+void format_affichage();
+void displayDigit(int block, int value);
+void interrupt_to_compteur();
+void desactiver_reveil();
+void stopTimer();
