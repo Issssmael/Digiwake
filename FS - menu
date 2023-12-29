@@ -1,192 +1,251 @@
-int menu(){
-    //Fonction qui va gérer le menu
-    Serial.begin(115200);
-    if(!oled1.begin(SSD1306_SWITCHCAPVCC,0x3C)){
-        Serial.print("SSD1306 allocation failed");
-        for(;;);
-    }
+void menu(){
+  //Fonction qui va gérer le menu
+  Serial.begin(115200);
+  if(!oled1.begin(SSD1306_SWITCHCAPVCC,0x3C)){
+      Serial.print("SSD1306 allocation failed");
+      for(;;);
+  }
+  oled1.clearDisplay();
+  oled1.setFont(&Tahu_16pt7b);
+  oled1.setTextSize(1);
+  oled1.setTextColor(WHITE);
+  oled1.setCursor(0,10);
+  switch(cursorMenu){
+    //Cela va juste servir à faire un effet esthétique, à montrer à l'utilisateur sur quelle valeur du menu il se trouve actuellement.
+    case 1:
     oled1.clearDisplay();
-    oled1.setFont(&Tahu_16pt7b);
-    oled1.setTextSize(1);
-    oled1.setTextColor(WHITE);
-    oled1.setCursor(0,10);
-    switch(cursorMenu){
-      //Cela va juste servir à faire un effet esthétique, à montrer à l'utilisateur sur quelle valeur du menu il se trouve actuellement.
-        case 1:
-            oled1.print(messageDep);
-            oled1.println();
-            oled1.print(option1bis);
-            oled1.println();
-            oled1.print(option2);
-            oled1.println();
-            oled1.print(option3);
-            oled1.println();
-            oled1.print(option4);
-            oled1.display();
-            if(digitalRead(button2) == HIGH){
-              cursorMenu += 1;
-              if(cursorMenu == 5){
-                cursorMenu = 1; //Indiquer sur quelle valeur du menu on se trouve.
-              }
-              delay(50); //debouncing
-            }
-            else if(digitalRead(button4) == HIGH){
-              cursorMenu -= 1;
-              if(cursorMenu == 0){
-              cursorMenu = 4;
-            }
-            delay(50); //debouncing
-            }
-            else if(digitalRead(button3) == HIGH){
-              if(cursorMenu == 1){
-              //Régler l'heure de l'alarme
-                return 2;
-              }
-            else if(cursorMenu == 2){
-            //Reglage de l'heure du réveil
-            //Interrmopre le comptage de l'heure pendant le changement de l'horaire manuellement
-              return 3;
-            }
-            else if(cursorMenu == 3){
-            //Consulter l'historique des temps de mise hors-tension du réveil
-              return 4;
-            }
-            else if(cursorMenu == 4){
-            //Sortir
-              return;
-            }
-            }
-        case 2:
-            oled1.print(messageDep);
-            oled1.println();
-            oled1.print(option1);
-            oled1.println();
-            oled1.print(option2bis);
-            oled1.println();
-            oled1.print(option3);
-            oled1.println();
-            oled1.print(option4);
-            oled1.display();
-            if(digitalRead(button2) == HIGH){
-              cursorMenu += 1;
-              if(cursorMenu == 5){
-                cursorMenu = 1; //Indiquer sur quelle valeur du menu on se trouve.
-              }
-              delay(50); //debouncing
-            }
-            else if(digitalRead(button4) == HIGH){
-              cursorMenu -= 1;
-              if(cursorMenu == 0){
-              cursorMenu = 4;
-            }
-            delay(50); //debouncing
-            }
-            else if(digitalRead(button3) == HIGH){
-              if(cursorMenu == 1){
-              //Régler l'heure de l'alarme
-                return 2;
-              }
-            else if(cursorMenu == 2){
-            //Reglage de l'heure du réveil
-            //Interrmopre le comptage de l'heure pendant le changement de l'horaire manuellement
-              return 3;
-            }
-            else if(cursorMenu == 3){
-            //Consulter l'historique des temps de mise hors-tension du réveil
-              return 4;
-            }
-            else if(cursorMenu == 4){
-            //Sortir
-              return;
-            }
-            }
-        case 3:
-            oled1.print(messageDep);
-            oled1.println();
-            oled1.print(option1);
-            oled1.println();
-            oled1.print(option2);
-            oled1.println();
-            oled1.print(option3bis);
-            oled1.println();
-            oled1.print(option4);
-            oled1.display();
-            if(digitalRead(button2) == HIGH){
-              cursorMenu += 1;
-              if(cursorMenu == 5){
-                cursorMenu = 1; //Indiquer sur quelle valeur du menu on se trouve.
-              }
-              delay(50); //debouncing
-            }
-            else if(digitalRead(button4) == HIGH){
-              cursorMenu -= 1;
-              if(cursorMenu == 0){
-              cursorMenu = 4;
-            }
-            delay(50); //debouncing
-            }
-            else if(digitalRead(button3) == HIGH){
-              if(cursorMenu == 1){
-              //Régler l'heure de l'alarme
-                return 2;
-              }
-            else if(cursorMenu == 2){
-            //Reglage de l'heure du réveil
-            //Interrmopre le comptage de l'heure pendant le changement de l'horaire manuellement
-              return 3;
-            }
-            else if(cursorMenu == 3){
-            //Consulter l'historique des temps de mise hors-tension du réveil
-              return 4;
-            }
-            else if(cursorMenu == 4){
-            //Sortir
-              return;
-            }
-            }
-        case 4:
-            oled1.print(messageDep);
-            oled1.println();
-            oled1.print(option1);
-            oled1.println();
-            oled1.print(option2);
-            oled1.println();
-            oled1.print(option3);
-            oled1.println();
-            oled1.print(option4bis);
-            oled1.display();
-            if(digitalRead(button2) == HIGH){
-              cursorMenu += 1;
-              if(cursorMenu == 5){
-                cursorMenu = 1; //Indiquer sur quelle valeur du menu on se trouve.
-              }
-              delay(50); //debouncing
-            }
-            else if(digitalRead(button4) == HIGH){
-              cursorMenu -= 1;
-              if(cursorMenu == 0){
-              cursorMenu = 4;
-            }
-            delay(50); //debouncing
-            }
-            else if(digitalRead(button3) == HIGH){
-              if(cursorMenu == 1){
-              //Régler l'heure de l'alarme
-                return 2;
-              }
-            else if(cursorMenu == 2){
-            //Reglage de l'heure du réveil
-            //Interrmopre le comptage de l'heure pendant le changement de l'horaire manuellement
-              return 3;
-            }
-            else if(cursorMenu == 3){
-            //Consulter l'historique des temps de mise hors-tension du réveil
-              return 4;
-            }
-            else if(cursorMenu == 4){
-            //Sortir
-              return;
-            }
-            }
+    oled1.print(messageDep);
+    oled1.println();
+    oled1.print(option1bis);
+    oled1.println();
+    oled1.print(option2);
+    oled1.println();
+    oled1.print(option3);
+    oled1.println();
+    oled1.print(option4);
+    oled1.println();
+    oled1.print(option5);
+    oled1.display();
+    if(digitalRead(button2) == HIGH){
+      cursorMenu += 1;
+      if(cursorMenu == 5){
+        cursorMenu = 1; //Indiquer sur quelle valeur du menu on se trouve.
+      }
+      delay(50); //debouncing
+    }
+    else if(digitalRead(button4) == HIGH){
+      cursorMenu -= 1;
+      if(cursorMenu == 0){
+      cursorMenu = 4;
+    }
+    delay(50); //debouncing
+    }
+    else if(digitalRead(button3) == HIGH){
+      if(cursorMenu == 1){
+      //Régler l'heure de l'alarme
+      //regler_heure_reveil();
+      }
+    else if(cursorMenu == 2){
+    //Reglage de l'heure du réveil
+      //regler_heure_reveil();
+    //Interrmopre le comptage de l'heure pendant le changement de l'horaire manuellement
+    }
+    else if(cursorMenu == 3){
+      //consulter_temps();
+    //Consulter l'historique des temps de mise hors-tension du réveil
+    }
+    else if(cursorMenu == 4){
+    //Sortir
+      exit(0);
+    }
+    }
+    case 2:
+    oled1.clearDisplay();
+    oled1.print(messageDep);
+    oled1.println();
+    oled1.print(option1);
+    oled1.println();
+    oled1.print(option2bis);
+    oled1.println();
+    oled1.print(option3);
+    oled1.println();
+    oled1.print(option4);
+    oled1.println();
+    oled1.print(option5);
+    oled1.display();
+    if(digitalRead(button2) == HIGH){
+      cursorMenu += 1;
+      if(cursorMenu == 5){
+        cursorMenu = 1; //Indiquer sur quelle valeur du menu on se trouve.
+      }
+      delay(50); //debouncing
+    }
+    else if(digitalRead(button4) == HIGH){
+      cursorMenu -= 1;
+      if(cursorMenu == 0){
+      cursorMenu = 4;
+    }
+    delay(50); //debouncing
+    }
+    else if(digitalRead(button3) == HIGH){
+      if(cursorMenu == 1){
+      //Régler l'heure de l'alarme
+      //regler_heure_reveil();
+      }
+    else if(cursorMenu == 2){
+    //Reglage de l'heure du réveil
+      //regler_heure_reveil();
+    //Interrmopre le comptage de l'heure pendant le changement de l'horaire manuellement
+    }
+    else if(cursorMenu == 3){
+      //consulter_temps();
+    //Consulter l'historique des temps de mise hors-tension du réveil
+    }
+    else if(cursorMenu == 4){
+    //Sortir
+      exit(0);
+    }
+    }
+    case 3:
+    oled1.clearDisplay();
+    oled1.print(messageDep);
+    oled1.println();
+    oled1.print(option1);
+    oled1.println();
+    oled1.print(option2);
+    oled1.println();
+    oled1.print(option3bis);
+    oled1.println();
+    oled1.print(option4);
+    oled1.println();
+    oled1.print(option5);
+    oled1.display();
+    if(digitalRead(button2) == HIGH){
+      cursorMenu += 1;
+      if(cursorMenu == 5){
+        cursorMenu = 1; //Indiquer sur quelle valeur du menu on se trouve.
+      }
+      delay(50); //debouncing
+    }
+    else if(digitalRead(button4) == HIGH){
+      cursorMenu -= 1;
+      if(cursorMenu == 0){
+      cursorMenu = 4;
+    }
+    delay(50); //debouncing
+    }
+    else if(digitalRead(button3) == HIGH){
+      if(cursorMenu == 1){
+      //Régler l'heure de l'alarme
+      //regler_heure_reveil();
+      }
+    else if(cursorMenu == 2){
+    //Reglage de l'heure du réveil
+      //regler_heure_reveil();
+    //Interrmopre le comptage de l'heure pendant le changement de l'horaire manuellement
+    }
+    else if(cursorMenu == 3){
+      //consulter_temps();
+    //Consulter l'historique des temps de mise hors-tension du réveil
+    }
+    else if(cursorMenu == 4){
+    //Sortir
+      exit(0);
+    }
+    }
+    case 4:
+    oled1.clearDisplay();
+    oled1.print(messageDep);
+    oled1.println();
+    oled1.print(option1);
+    oled1.println();
+    oled1.print(option2);
+    oled1.println();
+    oled1.print(option3);
+    oled1.println();
+    oled1.print(option4bis);
+    oled1.println();
+    oled1.print(option5);
+    oled1.display();
+    if(digitalRead(button2) == HIGH){
+      cursorMenu += 1;
+      if(cursorMenu == 5){
+        cursorMenu = 1; //Indiquer sur quelle valeur du menu on se trouve.
+      }
+      delay(50); //debouncing
+    }
+    else if(digitalRead(button4) == HIGH){
+      cursorMenu -= 1;
+      if(cursorMenu == 0){
+      cursorMenu = 4;
+    }
+    delay(50); //debouncing
+    }
+    else if(digitalRead(button3) == HIGH){
+      if(cursorMenu == 1){
+      //Régler l'heure de l'alarme
+      //regler_heure_reveil();
+      }
+    else if(cursorMenu == 2){
+    //Reglage de l'heure du réveil
+      //regler_heure_reveil();
+    //Interrmopre le comptage de l'heure pendant le changement de l'horaire manuellement
+    }
+    else if(cursorMenu == 3){
+      //consulter_temps();
+    //Consulter l'historique des temps de mise hors-tension du réveil
+    }
+    else if(cursorMenu == 4){
+    //Sortir
+      exit(0);
+    }
+    }
+    case 5:
+    oled1.clearDisplay();
+    oled1.print(messageDep);
+    oled1.println();
+    oled1.print(option1);
+    oled1.println();
+    oled1.print(option2);
+    oled1.println();
+    oled1.print(option3);
+    oled1.println();
+    oled1.print(option4);
+    oled1.println();
+    oled1.print(option5bis);
+    oled1.display();
+    if(digitalRead(button2) == HIGH){
+      cursorMenu += 1;
+      if(cursorMenu == 5){
+        cursorMenu = 1; //Indiquer sur quelle valeur du menu on se trouve.
+      }
+      delay(50); //debouncing
+    }
+    else if(digitalRead(button4) == HIGH){
+      cursorMenu -= 1;
+      if(cursorMenu == 0){
+      cursorMenu = 4;
+    }
+    delay(50); //debouncing
+    }
+    else if(digitalRead(button3) == HIGH){
+      if(cursorMenu == 1){
+      //Régler l'heure de l'alarme
+      //regler_heure_reveil();
+      }
+    else if(cursorMenu == 2){
+    //Reglage de l'heure du réveil
+      //regler_heure_reveil();
+    //Interrmopre le comptage de l'heure pendant le changement de l'horaire manuellement
+    }
+    else if(cursorMenu == 3){
+      //consulter_temps();
+    //Consulter l'historique des temps de mise hors-tension du réveil
+    }
+    else if(cursorMenu == 4){
+    //Sortir
+      exit(0);
+    }
+    }
     }      
   }
