@@ -1,1 +1,86 @@
+#include <Arduino.h>
+#include <Wire.h>
+#include <RTClib.h>
+#include <LedControl.h>
+#include <SPI.h>
 
+RTC_DS1307 rtc;
+
+const int DIN_PIN = 12;
+const int CLK_PIN = 11;
+const int CS_PIN = 10;
+
+LedControl lc = LedControl(DIN_PIN, CLK_PIN, CS_PIN, 4);  // 4 blocs de 8x8 LED
+
+// Tableau pour les chiffres de 0 à 9
+byte digits[10][8] = {
+  { B00111100, B01000010, B01000010, B01000010, B01000010, B01000010, B01000010, B00111100 },  // 0
+  { B00011000, B00001000, B00001000, B00001000, B00001000, B00001000, B00001000, B00011100 },  // 1
+  { B00111100, B01000010, B00000010, B00011100, B00100000, B01000000, B01000010, B00111100 },  // 2
+  { B00111100, B01000010, B00000010, B00011100, B00000010, B00000010, B01000010, B00111100 },  // 3
+  { B00001000, B00011000, B00101000, B01001000, B01001000, B01111110, B00001000, B00001000 },  // 4
+  { B00111100, B01000000, B01000000, B00111100, B00000010, B00000010, B01000010, B00111100 },  // 5
+  { B00111100, B01000000, B01000000, B00111100, B01000010, B01000010, B01000010, B00111100 },  // 6
+  { B00111110, B00000010, B00000100, B00001000, B00010000, B00010000, B00010000, B00010000 },  // 7
+  { B00111100, B01000010, B01000010, B00111100, B01000010, B01000010, B01000010, B00111100 },  // 8
+  { B00111100, B01000010, B01000010, B00111110, B00000010, B00000010, B01000010, B00111100 }   // 9
+};
+
+void setup() {
+  Serial.begin(9600);
+
+  if (!rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+
+  if (!rtc.isrunning()) {
+    Serial.println("RTC is NOT running!");
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  }
+
+  for (int i = 0; i < 4; i++) {
+    lc.shutdown(i, false);
+    lc.setIntensity(i, 5);
+    lc.clearDisplay(i);
+  }
+}
+
+void displayDigit(int block, int value) {
+  for (int i = 0; i < 8; i++) {
+    lc.setRow(block, i, digits[value][i]);
+  }
+}
+
+void loop() {
+  DateTime now = rtc.now();
+
+  int hourTens = now.hour() / 10;
+  int hourOnes = now.hour() % 10;
+  int minutTens = now.minute() / 10;
+  int minutOnes = now.minute() % 10;
+
+  // Affichage de la dizaine d'heure sur le premier bloc
+  displayDigit(3, hourTens);
+
+  // Affichage de l'unité d'heure sur le deuxième bloc
+  displayDigit(2, hourOnes);
+
+  // Affichage de la dizaine de minutes sur le troisième bloc
+  displayDigit(1, minutTens);
+
+  // Affichage de l'unité de minutes sur le quatrième bloc
+  displayDigit(0, minutOnes);
+
+
+  // Affichage des points entre les heures et les minutes sur le deuxième bloc
+  lc.setLed(2, 1, 7, true);
+  lc.setLed(2, 6, 7, true);
+  
+  delay(1000);
+
+  lc.setLed(2, 1, 7, false);
+  lc.setLed(2, 6, 7, false);
+
+  delay(1000);
+}
